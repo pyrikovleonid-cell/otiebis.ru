@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Отзывы — otiebis.ru</title>
+    <meta name="description" content="Отзывы клиентов о работе otiebis.ru" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+    <style>
+        /* ----- CSS-переменные ----- */
+        :root {
+            --bg: #c0c0c0;
+            --container-bg: rgba(255,255,255,0.88);
+            --container-opacity: 1;
+            --container-blur: 16px;
+            --text: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border: #dce1e8;
+            --card-bg: #ffffff;
+            --card-border: #eef2f6;
+            --input-bg: #f8fafc;
+            --input-border: #dce1e8;
+            --input-focus: #94a3b8;
+            --shadow: 0 8px 30px rgba(0,0,0,0.08);
+            --btn-bg: #0f172a;
+            --btn-hover: #1e293b;
+            --btn-text: #ffffff;
+            --star-color: #facc15;
+            --star-empty: #d1d5db;
+            --avatar-bg: #eef2f6;
+            --avatar-text: #1e293b;
+            --delete-color: #cbd5e1;
+            --delete-hover: #ef4444;
+            --delete-bg-hover: #fef2f2;
+            --success-bg: #eef2f6;
+            --empty-border: #e2e8f0;
+            --toast-bg: #0f172a;
+            --toast-text: #f1f5f9;
+            --media-border: #e2e8f0;
+            /* Переменные для фонов */
+            --grid-color: rgba(15,23,42,0.06);
+            --grid-hover: rgba(15,23,42,0.15);
+            --grid-border: rgba(15,23,42,0.08);
+            --gradient-color1: #ff6b6b;
+            --gradient-color2: #4ecdc4;
+            --solid-color: #c0c0c0;
+        }
+
+        body.dark {
+            --bg: #1a1a2e;
+            --container-bg: rgba(30, 41, 59, 0.92);
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #2d3748;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --input-bg: #1e293b;
+            --input-border: #475569;
+            --input-focus: #94a3b8;
+            --shadow: 0 8px 30px rgba(0,0,0,0.5);
+            --btn-bg: #f1f5f9;
+            --btn-hover: #ffffff;
+            --btn-text: #0f172a;
+            --star-color: #facc15;
+            --star-empty: #475569;
+            --avatar-bg: #334155;
+            --avatar-text: #e2e8f0;
+            --delete-color: #64748b;
+            --delete-hover: #f87171;
+            --delete-bg-hover: #3b1f1f;
+            --success-bg: #334155;
+            --empty-border: #334155;
+            --toast-bg: #f1f5f9;
+            --toast-text: #0f172a;
+            --media-border: #475569;
+            --grid-color: rgba(241,245,249,0.06);
+            --grid-hover: rgba(241,245,249,0.18);
+            --grid-border: rgba(241,245,249,0.08);
+            --gradient-color1: #ff6b6b;
+            --gradient-color2: #4ecdc4;
+            --solid-color: #1a1a2e;
+        }
+
+        /* ----- Базовые стили ----- */
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.4s, color 0.4s;
+            position: relative;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* ----- Фоны (активный — через JS) ----- */
+        .minefield { display: none; flex-direction: column; position: fixed; inset: 0; z-index: 0; background: var(--bg); padding: 8px; transition: background 0.4s; pointer-events: auto; }
+        .minefield.active { display: flex; }
+        .minefield .header { display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; background: var(--border); border: 2px solid var(--input-border); border-bottom: none; margin-bottom: 2px; font-family: 'Courier New', monospace; font-weight: 700; font-size: 1.2rem; color: #fff; text-shadow: 1px 1px 0 #000; flex-shrink: 0; height: 40px; }
+        .minefield .header .counter, .minefield .header .timer { background: #000; color: #ff0000; padding: 0 6px; border: 2px solid #444; font-size: 1.4rem; min-width: 50px; text-align: center; letter-spacing: 2px; line-height: 1.4; }
+        .minefield .header .smiley { font-size: 2rem; cursor: pointer; line-height: 1; background: var(--input-bg); padding: 0 8px; border: 2px solid var(--input-border); border-top-color: var(--input-border); border-left-color: var(--input-border); transition: 0.1s; }
+        .minefield .header .smiley:active { transform: scale(0.9); }
+        .minefield .grid { flex: 1; display: grid; gap: 1px; background: var(--border); border: 2px solid var(--input-border); border-bottom-color: var(--border); border-right-color: var(--border); padding: 2px; overflow: hidden; }
+        .minefield .grid .cell { background: var(--input-bg); border: 1px solid var(--input-border); border-right-color: var(--border); border-bottom-color: var(--border); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: background 0.1s; position: relative; color: #000; text-shadow: none; aspect-ratio: 1/1; min-width: 20px; min-height: 20px; }
+        body.dark .minefield .grid .cell { color: #eee; }
+        .minefield .grid .cell:hover { background: var(--grid-hover); }
+        .minefield .grid .cell.revealed { background: var(--card-bg); border: 1px solid var(--border); cursor: default; }
+        .minefield .grid .cell.revealed:hover { background: var(--card-bg); }
+        .minefield .grid .cell.flagged { background: var(--input-bg); color: var(--delete-hover); font-size: 1.2rem; }
+        .minefield .grid .cell.mine-shown { background: var(--card-bg); color: var(--delete-hover); font-size: 1.2rem; }
+        .minefield .grid .cell.n1 { color: #0000ff; }
+        .minefield .grid .cell.n2 { color: #008000; }
+        .minefield .grid .cell.n3 { color: #ff0000; }
+        .minefield .grid .cell.n4 { color: #000080; }
+        .minefield .grid .cell.n5 { color: #800000; }
+        .minefield .grid .cell.n6 { color: #008080; }
+        .minefield .grid .cell.n7 { color: #000000; }
+        .minefield .grid .cell.n8 { color: #808080; }
+        body.dark .minefield .grid .cell.n1 { color: #6b9fff; }
+        body.dark .minefield .grid .cell.n2 { color: #6fcf97; }
+        body.dark .minefield .grid .cell.n3 { color: #ff6b6b; }
+        body.dark .minefield .grid .cell.n4 { color: #b084cc; }
+        body.dark .minefield .grid .cell.n5 { color: #ff9f6b; }
+        body.dark .minefield .grid .cell.n6 { color: #6bcbcb; }
+        body.dark .minefield .grid .cell.n7 { color: #cccccc; }
+        body.dark .minefield .grid .cell.n8 { color: #aaaaaa; }
+
+        .grid-background { display: none; position: fixed; inset: 0; z-index: 0; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); grid-template-rows: repeat(auto-fill, minmax(50px, 1fr)); gap: 0; pointer-events: none; }
+        .grid-background.active { display: grid; }
+        .grid-background .cell { background: var(--grid-color); border: 1px solid var(--grid-border); transition: background 0.25s ease, border-color 0.25s ease; pointer-events: auto; cursor: default; }
+        .grid-background .cell:hover { background: var(--grid-hover); border-color: var(--grid-hover); transition-duration: 0.05s; }
+
+        .gradient-bg { display: none; position: fixed; inset: 0; z-index: 0; background: linear-gradient(45deg, var(--gradient-color1), var(--gradient-color2)); background-size: 400% 400%; animation: gradientShift 6s ease infinite; pointer-events: none; }
+        .gradient-bg.active { display: block; }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .solid-bg { display: none; position: fixed; inset: 0; z-index: 0; background: var(--solid-color); pointer-events: none; }
+        .solid-bg.active { display: block; }
+
+        /* ----- Контейнер с отзывами ----- */
+        .container {
+            position: relative; z-index: 1; max-width: 820px; width: 100%;
+            background: var(--container-bg);
+            backdrop-filter: blur(var(--container-blur));
+            -webkit-backdrop-filter: blur(var(--container-blur));
+            opacity: var(--container-opacity);
+            border-radius: 28px; padding: 1.8rem 2rem 2.2rem;
+            box-shadow: var(--shadow), 0 0 0 1px rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: background 0.4s, box-shadow 0.4s, border-color 0.4s, opacity 0.3s, backdrop-filter 0.3s;
+            pointer-events: auto;
+        }
+        body.dark .container { border-color: rgba(255,255,255,0.05); }
+
+        /* ----- Шапка ----- */
+        .page-header {
+            display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;
+            margin-bottom: 1.8rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+        }
+        .page-header .brand { font-size: 1.5rem; font-weight: 600; color: var(--text); }
+        .page-header .brand small { font-weight: 400; font-size: 0.9rem; color: var(--text-secondary); margin-left: 0.3rem; }
+        .page-header .subtitle { font-size: 0.9rem; color: var(--text-secondary); margin-left: auto; }
+
+        .bg-settings-btn {
+            background: transparent; border: 1px solid var(--border); border-radius: 40px;
+            padding: 0.25rem 0.8rem; font-size: 1rem; cursor: pointer; color: var(--text);
+            transition: all 0.2s; display: flex; align-items: center; gap: 0.3rem; line-height: 1.6;
+        }
+        .bg-settings-btn:hover { background: var(--card-bg); border-color: var(--input-focus); }
+        .bg-settings-btn:active { transform: scale(0.92); }
+
+        /* ----- Переключатель темы (toggle switch) ----- */
+        .theme-toggle {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+        .theme-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .theme-toggle .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border);
+            transition: 0.3s;
+            border-radius: 34px;
+            border: 1px solid var(--input-border);
+        }
+        .theme-toggle .slider::before {
+            content: "";
+            position: absolute;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text);
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        .theme-toggle input:checked + .slider {
+            background-color: var(--star-color);
+            border-color: var(--star-color);
+        }
+        .theme-toggle input:checked + .slider::before {
+            transform: translateX(22px);
+            background-color: #fff;
+        }
+        .theme-toggle input:focus-visible + .slider {
+            box-shadow: 0 0 0 2px var(--input-focus);
+        }
+
+        /* ----- Панель настроек фона ----- */
+        .bg-settings-panel {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            z-index: 10001; background: var(--container-bg); backdrop-filter: blur(24px);
+            border-radius: 24px; padding: 2rem; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 1px solid var(--border); max-width: 500px; width: 90%;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s, transform 0.3s;
+        }
+        .bg-settings-panel.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+        .bg-settings-panel .close-btn {
+            position: absolute; top: 0.8rem; right: 1.2rem; font-size: 1.5rem;
+            cursor: pointer; color: var(--text-secondary); background: none; border: none;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .bg-settings-panel .close-btn:hover { color: var(--text); transform: rotate(90deg); }
+        .bg-settings-panel h3 { margin-bottom: 1.2rem; color: var(--text); }
+        .bg-options { display: flex; flex-direction: column; gap: 1rem; }
+        .bg-option {
+            display: flex; align-items: center; gap: 1rem; padding: 0.5rem 1rem;
+            border-radius: 12px; border: 2px solid transparent; cursor: pointer;
+            transition: all 0.2s; background: var(--card-bg);
+        }
+        .bg-option:hover { border-color: var(--input-focus); transform: scale(1.01); }
+        .bg-option.selected { border-color: var(--star-color); background: var(--input-bg); }
+        .bg-option .preview { width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0; border: 1px solid var(--border); }
+        .bg-option .label { flex: 1; font-weight: 500; color: var(--text); }
+        .bg-option .color-pickers { display: flex; gap: 0.5rem; align-items: center; }
+        .bg-option .color-pickers input[type="color"] {
+            width: 30px; height: 30px; border: 2px solid var(--border); border-radius: 6px;
+            cursor: pointer; background: none; padding: 0;
+        }
+        .bg-option .color-pickers input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        .bg-option .color-pickers input[type="color"]::-webkit-color-swatch { border: none; border-radius: 4px; }
+
+        /* Слайдеры прозрачности и размытия */
+        .slider-group {
+            margin-top: 1.2rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+        }
+        .slider-group .slider-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+        }
+        .slider-group .slider-item label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            min-width: 80px;
+        }
+        .slider-group .slider-item input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            background: var(--input-border);
+            border-radius: 2px;
+            outline: none;
+            transition: background 0.2s;
+        }
+        .slider-group .slider-item input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--star-color);
+            cursor: pointer;
+            border: 2px solid var(--card-bg);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+            transition: 0.1s;
+        }
+        .slider-group .slider-item input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+        .slider-group .slider-item input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--star-color);
+            cursor: pointer;
+            border: 2px solid var(--card-bg);
+        }
+        .slider-group .slider-item .value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            min-width: 40px;
+            text-align: right;
+        }
+
+        /* ----- Рейтинг ----- */
+        .rating-summary {
+            display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+            margin-bottom: 1.5rem; padding: 0.25rem 0 0.5rem;
+        }
+        .rating-number { font-size: 2.2rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1; color: var(--text); }
+        .rating-stars { display: flex; gap: 2px; font-size: 1.1rem; color: var(--star-color); }
+        .rating-stars .star { display: inline-block; }
+        .rating-stars .star.empty { color: var(--star-empty); }
+        .rating-meta { font-size: 0.85rem; color: var(--text-secondary); margin-left: auto; }
+        .rating-meta span { font-weight: 600; color: var(--text); }
+
+        /* ----- Отзывы ----- */
+        .reviews-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; min-height: 40px; }
+        .reviews-list .empty-message { text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 1.5rem 0; border: 1px dashed var(--empty-border); border-radius: 16px; }
+        .review-card { background: var(--card-bg); border-radius: 16px; padding: 1rem 1.25rem; border: 1px solid var(--card-border); transition: all 0.25s; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .review-card:hover { border-color: var(--input-focus); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
+        .review-header { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.3rem; flex-wrap: wrap; }
+        .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--avatar-bg); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; color: var(--avatar-text); flex-shrink: 0; overflow: hidden; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .review-author { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+        .review-date { font-size: 0.75rem; color: var(--text-muted); margin-left: auto; }
+        .review-stars { display: flex; gap: 1px; font-size: 0.85rem; color: var(--star-color); margin-bottom: 0.2rem; }
+        .review-stars .star.empty { color: var(--star-empty); }
+        .review-text { font-size: 0.9rem; color: var(--text); line-height: 1.6; margin-top: 0.1rem; }
+        .review-text p { margin: 0; }
+        .review-media { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+        .review-media .media-item { max-width: 160px; max-height: 160px; border-radius: 10px; overflow: hidden; border: 1px solid var(--media-border); background: var(--input-bg); flex-shrink: 0; }
+        .review-media .media-item img, .review-media .media-item video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .delete-btn {
+            position: absolute; top: 0.6rem; right: 0.8rem; background: transparent; border: none;
+            font-size: 1rem; color: var(--delete-color); cursor: pointer; transition: all 0.2s;
+            line-height: 1; padding: 0.1rem 0.3rem; border-radius: 6px;
+        }
+        .delete-btn:hover { color: var(--delete-hover); background: var(--delete-bg-hover); transform: scale(1.1); }
+        .delete-btn:active { transform: scale(0.9); }
+
+        /* ----- Форма ----- */
+        .form-section { border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 0.2rem; }
+        .form-section h2 { font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 1rem; }
+        .review-form { display: flex; flex-direction: column; gap: 0.9rem; }
+        .form-row { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+        .form-row .form-group { flex: 1 1 160px; min-width: 130px; }
+        .form-group { display: flex; flex-direction: column; gap: 0.2rem; }
+        .form-group label { font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); letter-spacing: 0.01em; }
+        .form-group input[type="text"], .form-group textarea {
+            font-family: inherit; font-size: 0.9rem; padding: 0.45rem 0.7rem;
+            border: 1px solid var(--input-border); border-radius: 10px;
+            background: var(--input-bg); color: var(--text);
+            transition: all 0.2s; outline: none; width: 100%;
+        }
+        .form-group input[type="text"]:focus, .form-group textarea:focus {
+            border-color: var(--input-focus); box-shadow: 0 0 0 3px rgba(15,23,42,0.05);
+        }
+        .form-group textarea { resize: vertical; min-height: 70px; }
+
+        .star-rating { display: flex; gap: 0.2rem; font-size: 1.6rem; cursor: pointer; color: var(--star-empty); transition: color 0.1s; user-select: none; }
+        .star-rating .star { transition: color 0.1s; }
+        .star-rating .star.active { color: var(--star-color); }
+        .star-rating .star.hover { color: var(--star-color); }
+        .rating-value { font-size: 0.8rem; color: var(--text-secondary); margin-left: 0.3rem; }
+
+        .avatar-upload { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+        .avatar-preview { width: 40px; height: 40px; border-radius: 50%; background: var(--avatar-bg); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: var(--avatar-text); overflow: hidden; flex-shrink: 0; border: 1px solid var(--input-border); }
+        .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-preview .placeholder { font-size: 0.6rem; color: var(--text-muted); }
+
+        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
+        .file-input-wrapper input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+        .file-input-label {
+            display: inline-block; padding: 0.25rem 0.9rem; border: 1px solid var(--input-border);
+            border-radius: 40px; font-size: 0.8rem; background: var(--input-bg);
+            color: var(--text-secondary); cursor: pointer; transition: all 0.2s;
+        }
+        .file-input-label:hover { background: var(--card-bg); border-color: var(--input-focus); }
+        .file-input-label:active { transform: scale(0.95); }
+        .file-name { font-size: 0.8rem; color: var(--text-muted); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .media-upload { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem; }
+        .media-upload .file-list { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+        .media-upload .file-list .file-tag {
+            display: flex; align-items: center; gap: 0.2rem;
+            background: var(--card-bg); border: 1px solid var(--input-border);
+            border-radius: 40px; padding: 0.1rem 0.5rem 0.1rem 0.7rem;
+            font-size: 0.75rem; color: var(--text-secondary);
+        }
+        .media-upload .file-list .file-tag .remove-file {
+            background: transparent; border: none; color: var(--delete-color);
+            cursor: pointer; font-size: 0.9rem; line-height: 1; padding: 0 0.1rem;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .media-upload .file-list .file-tag .remove-file:hover { color: var(--delete-hover); transform: scale(1.2); }
+        .media-upload .file-list .file-tag .remove-file:active { transform: scale(0.8); }
+
+        .btn {
+            font-family: inherit; font-size: 0.9rem; font-weight: 500; padding: 0.5rem 1.5rem;
+            border: none; border-radius: 40px; background: var(--btn-bg); color: var(--btn-text);
+            cursor: pointer; transition: all 0.2s; align-self: flex-start; letter-spacing: 0.01em;
+        }
+        .btn:hover { background: var(--btn-hover); transform: scale(1.02); }
+        .btn:active { transform: scale(0.94); }
+
+        .form-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 0.2rem; }
+        .success-message { display: none; font-size: 0.85rem; color: var(--text); background: var(--success-bg); padding: 0.4rem 1rem; border-radius: 40px; }
+        .success-message.show { display: inline-block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { 0% { opacity: 0; transform: translateY(4px); } 100% { opacity: 1; transform: translateY(0); } }
+
+        /* ----- Полноэкранное предупреждение ----- */
+        .fullscreen-alert {
+            position: fixed; inset: 0; z-index: 10000;
+            background: #cc0000; display: flex; align-items: center; justify-content: center;
+            flex-direction: column; color: #ffffff; font-size: 4rem; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 0.1em; text-shadow: 0 0 30px rgba(0,0,0,0.5);
+            animation: alertPulse 0.5s ease-in-out infinite alternate;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .fullscreen-alert.show { opacity: 1; pointer-events: auto; }
+        .fullscreen-alert .sub { font-size: 1.5rem; margin-top: 1rem; font-weight: 400; letter-spacing: 0.05em; opacity: 0.8; }
+        @keyframes alertPulse { 0% { background: #cc0000; } 100% { background: #ff2222; } }
+
+        /* ----- Бейдж "Хуйня найдена" ----- */
+        .found-badge {
+            position: fixed; top: 1rem; right: 1rem; z-index: 9999;
+            background: #cc0000; color: #fff; padding: 0.6rem 1.2rem; border-radius: 40px;
+            font-weight: 700; font-size: 1rem; box-shadow: 0 4px 16px rgba(204,0,0,0.4);
+            transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid #ff4444; letter-spacing: 0.03em;
+        }
+        .found-badge.show { transform: translateX(0); }
+
+        /* ----- Toast ----- */
+        .toast-container { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 1000; pointer-events: none; }
+        .toast {
+            background: var(--toast-bg); color: var(--toast-text); padding: 0.7rem 1.5rem;
+            border-radius: 60px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); font-size: 1rem;
+            font-weight: 500; display: flex; align-items: center; gap: 0.6rem;
+            opacity: 0; transform: translateY(20px) scale(0.95); transition: all 0.35s ease;
+            pointer-events: none; border: 1px solid var(--border);
+        }
+        .toast.show { opacity: 1; transform: translateY(0) scale(1); }
+        .toast .emoji { font-size: 1.6rem; }
+        .toast .message { flex: 1; }
+
+        /* ----- Адаптивность ----- */
+        @media (max-width: 640px) {
+            body { padding: 0.8rem; }
+            .container { padding: 1.2rem 1rem 1.5rem; border-radius: 20px; }
+            .page-header .brand { font-size: 1.3rem; }
+            .page-header .subtitle { margin-left: 0; width: 100%; }
+            .rating-summary { gap: 0.5rem; }
+            .rating-number { font-size: 1.8rem; }
+            .rating-meta { margin-left: 0; width: 100%; }
+            .review-card { padding: 0.8rem 1rem; }
+            .review-header { gap: 0.5rem; }
+            .review-date { margin-left: 0; width: 100%; }
+            .delete-btn { top: 0.4rem; right: 0.5rem; }
+            .form-row { flex-direction: column; gap: 0.7rem; }
+            .form-row .form-group { flex: 1 1 auto; min-width: unset; }
+            .btn { width: 100%; text-align: center; }
+            .form-actions { flex-direction: column; align-items: stretch; }
+            .star-rating { font-size: 1.4rem; }
+            .avatar-upload { flex-direction: column; align-items: flex-start; }
+            .media-upload { flex-direction: column; align-items: stretch; }
+            .media-upload .file-list { justify-content: flex-start; }
+            .review-media .media-item { max-width: 100%; max-height: 150px; }
+            .toast { padding: 0.6rem 1rem; font-size: 0.9rem; }
+            .toast .emoji { font-size: 1.4rem; }
+            .fullscreen-alert { font-size: 2.5rem; }
+            .fullscreen-alert .sub { font-size: 1rem; }
+            .found-badge { font-size: 0.8rem; padding: 0.4rem 0.8rem; top: 0.5rem; right: 0.5rem; }
+            .minefield { padding: 4px; }
+            .minefield .header { height: 32px; font-size: 0.9rem; }
+            .minefield .header .counter, .minefield .header .timer { font-size: 1rem; min-width: 36px; }
+            .minefield .header .smiley { font-size: 1.5rem; }
+            .minefield .grid .cell { font-size: 0.8rem; min-width: 16px; min-height: 16px; }
+            .grid-background { grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); grid-template-rows: repeat(auto-fill, minmax(30px, 1fr)); }
+            .bg-settings-panel { padding: 1.5rem; max-width: 95%; }
+            .bg-option { flex-wrap: wrap; }
+            .slider-group .slider-item { flex-wrap: wrap; gap: 0.5rem; }
+            .slider-group .slider-item label { min-width: 60px; }
+        }
+        @media (max-width: 420px) {
+            .container { padding: 1rem 0.8rem 1.2rem; }
+            .rating-number { font-size: 1.6rem; }
+            .fullscreen-alert { font-size: 2rem; }
+            .minefield .grid .cell { font-size: 0.6rem; min-width: 12px; min-height: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Фоны -->
+    <div class="minefield" id="minefield">
+        <div class="header">
+            <div class="counter" id="mineCounter">000</div>
+            <div class="smiley" id="smiley">🙂</div>
+            <div class="timer" id="timerDisplay">000</div>
+        </div>
+        <div class="grid" id="grid"></div>
+    </div>
+    <div class="grid-background" id="gridBackground"></div>
+    <div class="gradient-bg" id="gradientBg"></div>
+    <div class="solid-bg" id="solidBg"></div>
+
+    <!-- Контейнер с отзывами -->
+    <div class="container">
+
+        <header class="page-header">
+            <div class="brand">otiebis.ru <small>отзывы</small></div>
+            <p class="subtitle">Что говорят о нас</p>
+            <button class="bg-settings-btn" id="bgSettingsBtn">🎨</button>
+            <label class="theme-toggle">
+                <input type="checkbox" id="themeCheckbox">
+                <span class="slider"></span>
+            </label>
+        </header>
+
+        <div class="rating-summary">
+            <div class="rating-number" id="ratingNumber">0.0</div>
+            <div class="rating-stars" id="ratingStars">
+                <span class="star">★</span><span class="star">★</span>
+                <span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            </div>
+            <div class="rating-meta"><span id="reviewCount">0</span> отзывов</div>
+        </div>
+
+        <div class="reviews-list" id="reviewsList"></div>
+
+        <section class="form-section">
+            <h2>Оставить отзыв</h2>
+            <form class="review-form" id="reviewForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Имя</label>
+                        <input type="text" id="name" placeholder="Например, Алексей" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Оценка</label>
+                        <div style="display:flex; align-items:center; gap:0.3rem;">
+                            <div class="star-rating" id="starRating">
+                                <span class="star" data-value="1">★</span>
+                                <span class="star" data-value="2">★</span>
+                                <span class="star" data-value="3">★</span>
+                                <span class="star" data-value="4">★</span>
+                                <span class="star" data-value="5">★</span>
+                            </div>
+                            <span class="rating-value" id="ratingValue">Не выбрано</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="comment">Комментарий</label>
+                    <textarea id="comment" placeholder="Поделитесь впечатлениями..." required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="flex:1;">
+                        <label>Аватар (необязательно)</label>
+                        <div class="avatar-upload">
+                            <div class="avatar-preview" id="avatarPreview"><span class="placeholder">+</span></div>
+                            <div class="file-input-wrapper">
+                                <span class="file-input-label">Выбрать</span>
+                                <input type="file" id="avatarInput" accept="image/*" />
+                            </div>
+                            <span class="file-name" id="fileName">Нет</span>
+                        </div>
+                    </div>
+                    <div class="form-group" style="flex:2;">
+                        <label>Фото / видео (необязательно)</label>
+                        <div class="media-upload">
+                            <div class="file-input-wrapper">
+                                <span class="file-input-label">Добавить</span>
+                                <input type="file" id="mediaInput" accept="image/*,video/*" multiple />
+                            </div>
+                            <div class="file-list" id="fileList"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn">Отправить</button>
+                    <span class="success-message" id="successMsg">✓ Спасибо!</span>
+                </div>
+            </form>
+        </section>
+
+    </div>
+
+    <!-- Панель настроек фона -->
+    <div class="bg-settings-panel" id="bgSettingsPanel">
+        <button class="close-btn" id="bgSettingsClose">✕</button>
+        <h3>Настройки фона</h3>
+        <div class="bg-options">
+            <div class="bg-option" data-bg="minesweeper">
+                <div class="preview" style="background:#c0c0c0; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">💣</div>
+                <span class="label">Сапёр (игра)</span>
+            </div>
+            <div class="bg-option" data-bg="grid">
+                <div class="preview" style="background: repeating-conic-gradient(var(--grid-color) 0% 25%, var(--grid-hover) 0% 50%) 0 0 / 20px 20px;"></div>
+                <span class="label">Клетчатый</span>
+                <div class="color-pickers">
+                    <input type="color" id="gridColor1" value="#0f172a0f" title="Цвет ячейки" />
+                    <input type="color" id="gridColor2" value="#0f172a26" title="Цвет при наведении" />
+                </div>
+            </div>
+            <div class="bg-option" data-bg="gradient">
+                <div class="preview" style="background:linear-gradient(45deg,#ff6b6b,#4ecdc4);"></div>
+                <span class="label">Градиент</span>
+                <div class="color-pickers">
+                    <input type="color" id="gradientColor1" value="#ff6b6b" title="Цвет 1" />
+                    <input type="color" id="gradientColor2" value="#4ecdc4" title="Цвет 2" />
+                </div>
+            </div>
+            <div class="bg-option" data-bg="solid">
+                <div class="preview" style="background:#c0c0c0;"></div>
+                <span class="label">Сплошной</span>
+                <div class="color-pickers">
+                    <input type="color" id="solidColor" value="#c0c0c0" title="Цвет" />
+                </div>
+            </div>
+        </div>
+        <!-- Слайдеры прозрачности и размытия -->
+        <div class="slider-group">
+            <div class="slider-item">
+                <label>Прозрачность</label>
+                <input type="range" id="opacitySlider" min="0.1" max="1" step="0.01" value="1" />
+                <span class="value" id="opacityValue">100%</span>
+            </div>
+            <div class="slider-item">
+                <label>Размытие</label>
+                <input type="range" id="blurSlider" min="0" max="40" step="1" value="16" />
+                <span class="value" id="blurValue">16px</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Полноэкранное предупреждение -->
+    <div class="fullscreen-alert" id="fullscreenAlert">
+        <div>Сьебалась Хуйня</div>
+        <div class="sub">⚠️ Арина обнаружена ⚠️</div>
+    </div>
+
+    <div class="found-badge" id="foundBadge">🚨 Хуйня найдена</div>
+
+    <div class="toast-container" id="toastContainer">
+        <div class="toast" id="toast">
+            <span class="emoji" id="toastEmoji">🎉</span>
+            <span class="message" id="toastMessage">Спасибо!</span>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ----- Управление фонами + слайдеры -----
+            const BG_SETTINGS_KEY = 'otiebis_bg_settings';
+            const minefieldEl = document.getElementById('minefield');
+            const gridBgEl = document.getElementById('gridBackground');
+            const gradientBgEl = document.getElementById('gradientBg');
+            const solidBgEl = document.getElementById('solidBg');
+            const panel = document.getElementById('bgSettingsPanel');
+            const btnOpen = document.getElementById('bgSettingsBtn');
+            const btnClose = document.getElementById('bgSettingsClose');
+            const options = document.querySelectorAll('.bg-option');
+            const gridColor1 = document.getElementById('gridColor1');
+            const gridColor2 = document.getElementById('gridColor2');
+            const gradientColor1 = document.getElementById('gradientColor1');
+            const gradientColor2 = document.getElementById('gradientColor2');
+            const solidColor = document.getElementById('solidColor');
+
+            // Слайдеры
+            const opacitySlider = document.getElementById('opacitySlider');
+            const blurSlider = document.getElementById('blurSlider');
+            const opacityValue = document.getElementById('opacityValue');
+            const blurValue = document.getElementById('blurValue');
+
+            // Контейнер для применения стилей
+            const container = document.querySelector('.container');
+
+            function loadBgSettings() {
+                try { const s = localStorage.getItem(BG_SETTINGS_KEY); return s ? JSON.parse(s) : null; } catch (e) { return null; }
+            }
+
+            function saveBgSettings(s) { localStorage.setItem(BG_SETTINGS_KEY, JSON.stringify(s)); }
+
+            function applyBgSettings(settings) {
+                if (!settings) settings = { type: 'minesweeper', opacity: 1, blur: 16 };
+                const type = settings.type || 'minesweeper';
+                minefieldEl.classList.remove('active');
+                gridBgEl.classList.remove('active');
+                gradientBgEl.classList.remove('active');
+                solidBgEl.classList.remove('active');
+                switch (type) {
+                    case 'minesweeper':
+                        minefieldEl.classList.add('active');
+                        if (typeof resetGame === 'function') resetGame();
+                        break;
+                    case 'grid':
+                        gridBgEl.classList.add('active');
+                        document.documentElement.style.setProperty('--grid-color', settings.gridColor1 || '#0f172a0f');
+                        document.documentElement.style.setProperty('--grid-hover', settings.gridColor2 || '#0f172a26');
+                        const borderColor = settings.gridColor1 ? settings.gridColor1.replace('0f', '18') : '#0f172a18';
+                        document.documentElement.style.setProperty('--grid-border', borderColor);
+                        generateGridBackground();
+                        break;
+                    case 'gradient':
+                        gradientBgEl.classList.add('active');
+                        document.documentElement.style.setProperty('--gradient-color1', settings.gradientColor1 || '#ff6b6b');
+                        document.documentElement.style.setProperty('--gradient-color2', settings.gradientColor2 || '#4ecdc4');
+                        break;
+                    case 'solid':
+                        solidBgEl.classList.add('active');
+                        document.documentElement.style.setProperty('--solid-color', settings.solidColor || '#c0c0c0');
+                        break;
+                    default: minefieldEl.classList.add('active');
+                }
+                options.forEach(opt => opt.classList.toggle('selected', opt.dataset.bg === type));
+                if (settings.gridColor1) gridColor1.value = settings.gridColor1;
+                if (settings.gridColor2) gridColor2.value = settings.gridColor2;
+                if (settings.gradientColor1) gradientColor1.value = settings.gradientColor1;
+                if (settings.gradientColor2) gradientColor2.value = settings.gradientColor2;
+                if (settings.solidColor) solidColor.value = settings.solidColor;
+
+                // Применяем прозрачность и размытие
+                const opacity = settings.opacity !== undefined ? settings.opacity : 1;
+                const blur = settings.blur !== undefined ? settings.blur : 16;
+                container.style.opacity = opacity;
+                container.style.setProperty('--container-blur', blur + 'px');
+                opacitySlider.value = opacity;
+                blurSlider.value = blur;
+                opacityValue.textContent = Math.round(opacity * 100) + '%';
+                blurValue.textContent = blur + 'px';
+            }
+
+            function generateGridBackground() {
+                const grid = gridBgEl;
+                const cellSize = window.innerWidth < 640 ? 30 : 50;
+                const cols = Math.ceil(window.innerWidth / cellSize);
+                const rows = Math.ceil(window.innerHeight / cellSize);
+                grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+                grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+                grid.innerHTML = '';
+                for (let i = 0; i < cols * rows; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    grid.appendChild(cell);
+                }
+            }
+
+            btnOpen.addEventListener('click', () => { panel.classList.add('show'); });
+            btnClose.addEventListener('click', () => { panel.classList.remove('show'); });
+            panel.addEventListener('click', (e) => { if (e.target === panel) panel.classList.remove('show'); });
+
+            options.forEach(opt => {
+                opt.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'INPUT') return;
+                    const type = this.dataset.bg;
+                    const settings = loadBgSettings() || {};
+                    settings.type = type;
+                    if (type === 'grid') { settings.gridColor1 = gridColor1.value;
+                        settings.gridColor2 = gridColor2.value; }
+                    if (type === 'gradient') { settings.gradientColor1 = gradientColor1.value;
+                        settings.gradientColor2 = gradientColor2.value; }
+                    if (type === 'solid') { settings.solidColor = solidColor.value; }
+                    // Сохраняем текущие opacity и blur
+                    settings.opacity = parseFloat(opacitySlider.value);
+                    settings.blur = parseInt(blurSlider.value);
+                    saveBgSettings(settings);
+                    applyBgSettings(settings);
+                    panel.classList.remove('show');
+                });
+            });
+
+            function onColorChange() {
+                const settings = loadBgSettings() || {};
+                const type = settings.type || 'minesweeper';
+                if (type === 'grid') {
+                    settings.gridColor1 = gridColor1.value;
+                    settings.gridColor2 = gridColor2.value;
+                    document.documentElement.style.setProperty('--grid-color', gridColor1.value);
+                    document.documentElement.style.setProperty('--grid-hover', gridColor2.value);
+                    const borderColor = gridColor1.value.replace('0f', '18');
+                    document.documentElement.style.setProperty('--grid-border', borderColor);
+                } else if (type === 'gradient') {
+                    settings.gradientColor1 = gradientColor1.value;
+                    settings.gradientColor2 = gradientColor2.value;
+                    document.documentElement.style.setProperty('--gradient-color1', gradientColor1.value);
+                    document.documentElement.style.setProperty('--gradient-color2', gradientColor2.value);
+                } else if (type === 'solid') {
+                    settings.solidColor = solidColor.value;
+                    document.documentElement.style.setProperty('--solid-color', solidColor.value);
+                }
+                settings.opacity = parseFloat(opacitySlider.value);
+                settings.blur = parseInt(blurSlider.value);
+                saveBgSettings(settings);
+                // Применяем opacity/blur сразу
+                container.style.opacity = settings.opacity;
+                container.style.setProperty('--container-blur', settings.blur + 'px');
+            }
+            gridColor1.addEventListener('input', onColorChange);
+            gridColor2.addEventListener('input', onColorChange);
+            gradientColor1.addEventListener('input', onColorChange);
+            gradientColor2.addEventListener('input', onColorChange);
+            solidColor.addEventListener('input', onColorChange);
+
+            // Слайдеры – сохраняем и применяем
+            function onSliderChange() {
+                const settings = loadBgSettings() || {};
+                settings.opacity = parseFloat(opacitySlider.value);
+                settings.blur = parseInt(blurSlider.value);
+                container.style.opacity = settings.opacity;
+                container.style.setProperty('--container-blur', settings.blur + 'px');
+                opacityValue.textContent = Math.round(settings.opacity * 100) + '%';
+                blurValue.textContent = settings.blur + 'px';
+                saveBgSettings(settings);
+            }
+            opacitySlider.addEventListener('input', onSliderChange);
+            blurSlider.addEventListener('input', onSliderChange);
+
+            const saved = loadBgSettings();
+            applyBgSettings(saved || { type: 'minesweeper', opacity: 1, blur: 16 });
+
+            // ----- Игра Сапёр (вторая версия) -----
+            let rows = 16,
+                cols = 30,
+                totalMines = 80;
+            let grid = [],
+                revealed = [],
+                flagged = [];
+            let gameOver = false,
+                firstClick = true;
+            let timer = 0,
+                timerInterval = null;
+            let minesRemaining = totalMines;
+
+            function getDimensions() {
+                const w = window.innerWidth,
+                    h = window.innerHeight;
+                let newCols, newRows;
+                if (w < 640) { newCols = Math.floor((w - 20) / 22);
+                    newRows = Math.floor((h - 120) / 22); } else if (w < 1024) { newCols = Math.floor((w - 40) / 26);
+                    newRows = Math.floor((h - 120) / 26); } else { newCols = 30;
+                    newRows = 16; }
+                newCols = Math.max(8, Math.min(40, newCols));
+                newRows = Math.max(6, Math.min(24, newRows));
+                return { rows: newRows, cols: newCols };
+            }
+
+            function initGame() {
+                const dims = getDimensions();
+                rows = dims.rows;
+                cols = dims.cols;
+                totalMines = Math.max(1, Math.min(Math.floor((rows * cols) * 0.12), rows * cols - 1));
+                grid = Array.from({ length: rows }, () => Array(cols).fill(0));
+                revealed = Array.from({ length: rows }, () => Array(cols).fill(false));
+                flagged = Array.from({ length: rows }, () => Array(cols).fill(false));
+                gameOver = false;
+                firstClick = true;
+                timer = 0;
+                minesRemaining = totalMines;
+                if (timerInterval) { clearInterval(timerInterval);
+                    timerInterval = null; }
+                timerDisplayEl.textContent = '000';
+                mineCounterEl.textContent = String(minesRemaining).padStart(3, '0');
+                smileyEl.textContent = '🙂';
+                renderGrid();
+            }
+
+            function placeMines(safeRow, safeCol) {
+                let minePositions = [];
+                for (let r = 0; r < rows; r++)
+                    for (let c = 0; c < cols; c++) {
+                        if (Math.abs(r - safeRow) <= 1 && Math.abs(c - safeCol) <= 1) continue;
+                        minePositions.push([r, c]);
+                    }
+                for (let i = minePositions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [minePositions[i], minePositions[j]] = [minePositions[j], minePositions[i]];
+                }
+                const mineCount = Math.min(totalMines, minePositions.length);
+                for (let i = 0; i < mineCount; i++) {
+                    const [r, c] = minePositions[i];
+                    grid[r][c] = -1;
+                }
+                for (let r = 0; r < rows; r++)
+                    for (let c = 0; c < cols; c++) {
+                        if (grid[r][c] === -1) continue;
+                        let count = 0;
+                        for (let dr = -1; dr <= 1; dr++)
+                            for (let dc = -1; dc <= 1; dc++) {
+                                if (dr === 0 && dc === 0) continue;
+                                const nr = r + dr,
+                                    nc = c + dc;
+                                if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] === -1) count++;
+                            }
+                        grid[r][c] = count;
+                    }
+            }
+
+            function renderGrid() {
+                gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+                gridEl.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+                gridEl.innerHTML = '';
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'cell';
+                        cell.dataset.row = r;
+                        cell.dataset.col = c;
+                        cell.addEventListener('click', () => handleClick(r, c));
+                        cell.addEventListener('contextmenu', (e) => { e.preventDefault();
+                            handleRightClick(r, c); });
+                        gridEl.appendChild(cell);
+                    }
+                }
+                updateDisplay();
+            }
+
+            function updateDisplay() {
+                const cells = gridEl.children;
+                let idx = 0;
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        const cell = cells[idx];
+                        cell.className = 'cell';
+                        if (revealed[r][c]) {
+                            cell.classList.add('revealed');
+                            if (grid[r][c] === -1) { cell.textContent = '💣';
+                                cell.classList.add('mine-shown'); } else if (grid[r][c] > 0) { cell.textContent = grid[r][c];
+                                cell.classList.add('n' + grid[r][c]); } else { cell.textContent = ''; }
+                        } else {
+                            if (flagged[r][c]) { cell.textContent = '🚩';
+                                cell.classList.add('flagged'); } else { cell.textContent = ''; }
+                        }
+                        if (gameOver && grid[r][c] === -1 && !revealed[r][c]) {
+                            cell.textContent = '💣';
+                            cell.classList.add('mine-shown');
+                            cell.classList.add('revealed');
+                        }
+                        idx++;
+                    }
+                }
+                mineCounterEl.textContent = String(minesRemaining).padStart(3, '0');
+            }
+
+            function handleClick(row, col) {
+                if (gameOver) return;
+                if (flagged[row][col]) return;
+                if (revealed[row][col]) return;
+                if (firstClick) {
+                    firstClick = false;
+                    placeMines(row, col);
+                    timer = 0;
+                    timerInterval = setInterval(() => { timer++;
+                        timerDisplayEl.textContent = String(timer).padStart(3, '0'); }, 1000);
+                }
+                if (grid[row][col] === -1) {
+                    gameOver = true;
+                    smileyEl.textContent = '😵';
+                    for (let r = 0; r < rows; r++)
+                        for (let c = 0; c < cols; c++) {
+                            if (grid[r][c] === -1) revealed[r][c] = true;
+                        }
+                    updateDisplay();
+                    if (timerInterval) { clearInterval(timerInterval);
+                        timerInterval = null; }
+                    return;
+                }
+                revealCell(row, col);
+                updateDisplay();
+                checkWin();
+            }
+
+            function revealCell(row, col) {
+                if (row < 0 || row >= rows || col < 0 || col >= cols) return;
+                if (revealed[row][col]) return;
+                if (flagged[row][col]) return;
+                if (grid[row][col] === -1) return;
+                revealed[row][col] = true;
+                if (grid[row][col] === 0) {
+                    for (let dr = -1; dr <= 1; dr++)
+                        for (let dc = -1; dc <= 1; dc++) {
+                            if (dr === 0 && dc === 0) continue;
+                            revealCell(row + dr, col + dc);
+                        }
+                }
+            }
+
+            function handleRightClick(row, col) {
+                if (gameOver) return;
+                if (revealed[row][col]) return;
+                if (firstClick) return;
+                if (flagged[row][col]) { flagged[row][col] = false;
+                    minesRemaining++; } else { flagged[row][col] = true;
+                    minesRemaining--; }
+                updateDisplay();
+                checkWin();
+            }
+
+            function checkWin() {
+                let allRevealed = true;
+                for (let r = 0; r < rows; r++)
+                    for (let c = 0; c < cols; c++) {
+                        if (grid[r][c] !== -1 && !revealed[r][c]) { allRevealed = false; break; }
+                    }
+                if (allRevealed && !gameOver) {
+                    gameOver = true;
+                    smileyEl.textContent = '😎';
+                    if (timerInterval) { clearInterval(timerInterval);
+                        timerInterval = null; }
+                    for (let r = 0; r < rows; r++)
+                        for (let c = 0; c < cols; c++) {
+                            if (grid[r][c] === -1 && !flagged[r][c]) { flagged[r][c] = true;
+                                minesRemaining--; }
+                        }
+                    updateDisplay();
+                }
+            }
+
+            function resetGame() { if (timerInterval) { clearInterval(timerInterval);
+                    timerInterval = null; } initGame(); }
+
+            const gridEl = document.getElementById('grid');
+            const mineCounterEl = document.getElementById('mineCounter');
+            const timerDisplayEl = document.getElementById('timerDisplay');
+            const smileyEl = document.getElementById('smiley');
+            smileyEl.addEventListener('click', resetGame);
+
+            let resizeTimeout;
+            window.addEventListener('resize', () => { clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => { if (minefieldEl.classList.contains('active')) resetGame(); }, 300); });
+            initGame();
+
+            // ----- Тема (переключатель) -----
+            const THEME_KEY = 'otiebis_theme';
+            const themeCheckbox = document.getElementById('themeCheckbox');
+
+            function getStoredTheme() { return localStorage.getItem(THEME_KEY) || 'light'; }
+
+            function setTheme(theme) {
+                const isDark = theme === 'dark';
+                document.body.classList.toggle('dark', isDark);
+                themeCheckbox.checked = isDark;
+                localStorage.setItem(THEME_KEY, theme);
+            }
+            themeCheckbox.addEventListener('change', function() {
+                const newTheme = this.checked ? 'dark' : 'light';
+                setTheme(newTheme);
+            });
+            setTheme(getStoredTheme());
+
+            // ----- Остальные функции (отзывы, аватарки, медиа, Арина) -----
+            const STORAGE_KEY = 'otiebis_reviews';
+            const DB_NAME = 'otiebisMediaDB';
+            const STORE_NAME = 'media';
+
+            function openDB() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(DB_NAME, 1);
+                    request.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains(STORE_NAME)) {
+                            db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                        }
+                    };
+                    request.onsuccess = (e) => resolve(e.target.result);
+                    request.onerror = (e) => reject(e.target.error);
+                });
+            }
+            async function saveMediaFile(file) {
+                const db = await openDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    const data = { name: file.name, type: file.type, size: file.size, blob: file };
+                    const request = store.add(data);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+            async function getMediaFile(id) {
+                const db = await openDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readonly');
+                    const store = tx.objectStore(STORE_NAME);
+                    const request = store.get(id);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+            async function deleteMediaFile(id) {
+                const db = await openDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    const request = store.delete(id);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            function loadReviews() {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    try { return JSON.parse(stored); } catch (e) { return []; }
+                }
+                return [];
+            }
+
+            function saveReviews(reviews) { localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews)); }
+
+            // ----- Звёздный рейтинг в форме -----
+            const stars = document.querySelectorAll('#starRating .star');
+            let selectedRating = 0;
+            const ratingValueSpan = document.getElementById('ratingValue');
+
+            function updateStars(rating) {
+                stars.forEach(star => {
+                    const val = parseInt(star.dataset.value);
+                    star.classList.toggle('active', val <= rating);
+                });
+            }
+
+            function setRating(rating) {
+                selectedRating = rating;
+                updateStars(rating);
+                ratingValueSpan.textContent = rating ? `${rating} ★` : 'Не выбрано';
+            }
+            stars.forEach(star => {
+                const val = parseInt(star.dataset.value);
+                star.addEventListener('mouseenter', function() {
+                    stars.forEach(s => {
+                        const v = parseInt(s.dataset.value);
+                        s.classList.toggle('hover', v <= val);
+                    });
+                });
+                star.addEventListener('mouseleave', function() {
+                    stars.forEach(s => s.classList.remove('hover'));
+                });
+                star.addEventListener('click', function() { setRating(val); });
+            });
+            document.getElementById('starRating').addEventListener('mouseleave', function() { updateStars(selectedRating); });
+
+            // ----- Аватар -----
+            const avatarInput = document.getElementById('avatarInput');
+            const avatarPreview = document.getElementById('avatarPreview');
+            const fileName = document.getElementById('fileName');
+            let avatarDataURL = null;
+
+            function resetAvatar() {
+                avatarDataURL = null;
+                avatarPreview.innerHTML = `<span class="placeholder">+</span>`;
+                fileName.textContent = 'Нет';
+                avatarInput.value = '';
+            }
+            avatarInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) { resetAvatar(); return; }
+                fileName.textContent = file.name;
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    avatarDataURL = ev.target.result;
+                    avatarPreview.innerHTML = `<img src="${ev.target.result}" alt="Аватар" />`;
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // ----- Медиа -----
+            const mediaInput = document.getElementById('mediaInput');
+            const fileListContainer = document.getElementById('fileList');
+            let selectedFiles = [];
+
+            function renderFileTags() {
+                fileListContainer.innerHTML = '';
+                selectedFiles.forEach((file, index) => {
+                    const tag = document.createElement('span');
+                    tag.className = 'file-tag';
+                    const icon = file.type.startsWith('video/') ? '🎬' : '🖼️';
+                    tag.innerHTML =
+                        `${icon} ${file.name.substring(0, 10)}${file.name.length>10?'…':''} <button class="remove-file" data-index="${index}" aria-label="Удалить">✕</button>`;
+                    fileListContainer.appendChild(tag);
+                });
+                document.querySelectorAll('.remove-file').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const idx = parseInt(this.dataset.index);
+                        selectedFiles.splice(idx, 1);
+                        renderFileTags();
+                        mediaInput.value = '';
+                    });
+                });
+            }
+            mediaInput.addEventListener('change', function(e) {
+                const newFiles = Array.from(e.target.files);
+                if (newFiles.length === 0) return;
+                const existingNames = selectedFiles.map(f => f.name);
+                newFiles.forEach(file => {
+                    if (!existingNames.includes(file.name)) { selectedFiles.push(file); }
+                });
+                renderFileTags();
+                mediaInput.value = '';
+            });
+
+            // ----- Звук сирены -----
+            let sirenContext = null,
+                sirenOsc1 = null,
+                sirenOsc2 = null,
+                sirenGain = null,
+                sirenTimeout = null;
+
+            function playSiren() {
+                try {
+                    if (!sirenContext) { sirenContext = new(window.AudioContext || window.webkitAudioContext)(); }
+                    if (sirenContext.state === 'suspended') { sirenContext.resume(); }
+                    sirenOsc1 = sirenContext.createOscillator();
+                    sirenOsc2 = sirenContext.createOscillator();
+                    sirenGain = sirenContext.createGain();
+                    sirenGain.gain.value = 0.3;
+                    sirenOsc1.type = 'sawtooth';
+                    sirenOsc2.type = 'square';
+                    let freq1 = 300,
+                        freq2 = 400,
+                        direction = 1;
+                    sirenOsc1.frequency.value = freq1;
+                    sirenOsc2.frequency.value = freq2;
+                    sirenOsc1.connect(sirenGain);
+                    sirenOsc2.connect(sirenGain);
+                    sirenGain.connect(sirenContext.destination);
+                    sirenOsc1.start();
+                    sirenOsc2.start();
+                    if (sirenTimeout) clearInterval(sirenTimeout);
+                    sirenTimeout = setInterval(() => {
+                        if (!sirenContext || sirenContext.state === 'closed') return;
+                        let newFreq = sirenOsc1.frequency.value + direction * 50;
+                        if (newFreq > 600 || newFreq < 200) direction *= -1;
+                        sirenOsc1.frequency.setTargetAtTime(newFreq, sirenContext.currentTime, 0.05);
+                        sirenOsc2.frequency.setTargetAtTime(newFreq * 1.2, sirenContext.currentTime, 0.05);
+                    }, 150);
+                } catch (e) { console.warn('Звук сирены не поддерживается:', e); }
+            }
+
+            function stopSiren() {
+                try {
+                    if (sirenTimeout) { clearInterval(sirenTimeout);
+                        sirenTimeout = null; }
+                    if (sirenOsc1) { sirenOsc1.stop();
+                        sirenOsc1.disconnect();
+                        sirenOsc1 = null; }
+                    if (sirenOsc2) { sirenOsc2.stop();
+                        sirenOsc2.disconnect();
+                        sirenOsc2 = null; }
+                    if (sirenGain) { sirenGain.disconnect();
+                        sirenGain = null; }
+                    if (sirenContext && sirenContext.state !== 'closed') { sirenContext.close();
+                        sirenContext = null; }
+                } catch (e) { /* ignore */ }
+            }
+
+            // ----- Полноэкранное сообщение + бейдж -----
+            const alertEl = document.getElementById('fullscreenAlert');
+            const badgeEl = document.getElementById('foundBadge');
+            let alertTimer = null;
+
+            function showArinaAlert() {
+                alertEl.classList.add('show');
+                playSiren();
+                if (alertTimer) clearTimeout(alertTimer);
+                alertTimer = setTimeout(() => {
+                    alertEl.classList.remove('show');
+                    stopSiren();
+                    badgeEl.classList.add('show');
+                    setTimeout(() => { badgeEl.classList.remove('show'); }, 15000);
+                }, 10000);
+            }
+
+            // ----- Тост -----
+            function showToast(emoji, message, rating) {
+                const toast = document.getElementById('toast');
+                const toastEmoji = document.getElementById('toastEmoji');
+                const toastMsg = document.getElementById('toastMessage');
+                toastEmoji.textContent = emoji;
+                toastMsg.textContent = message;
+                let bgColor, textColor;
+                if (rating >= 5) { bgColor = '#10b981';
+                    textColor = '#fff'; } else if (rating >= 4) { bgColor = '#34d399';
+                    textColor = '#0f172a'; } else if (rating >= 3) { bgColor = '#fbbf24';
+                    textColor = '#0f172a'; } else if (rating >= 2) { bgColor = '#fb923c';
+                    textColor = '#0f172a'; } else { bgColor = '#f87171';
+                    textColor = '#fff'; }
+                toast.style.background = bgColor;
+                toast.style.color = textColor;
+                toast.style.borderColor = bgColor;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3500);
+            }
+
+            // ----- Рендеринг отзывов -----
+            async function renderReviews() {
+                const reviews = loadReviews();
+                const list = document.getElementById('reviewsList');
+                const countSpan = document.getElementById('reviewCount');
+                const ratingNumber = document.getElementById('ratingNumber');
+                const ratingStars = document.getElementById('ratingStars');
+
+                if (reviews.length === 0) {
+                    list.innerHTML = `<div class="empty-message">Пока нет отзывов. Будьте первым!</div>`;
+                } else {
+                    let html = '';
+                    for (let index = 0; index < reviews.length; index++) {
+                        const review = reviews[index];
+                        const starsHtml = renderStars(review.rating);
+                        const avatarHtml = review.avatar ?
+                            `<img src="${review.avatar}" alt="Аватар" />` :
+                            getAvatarLetter(review.name);
+                        const dateStr = formatDate(review.date);
+                        let mediaHtml = '';
+                        if (review.mediaIds && review.mediaIds.length) {
+                            const mediaItems = [];
+                            for (const id of review.mediaIds) {
+                                try {
+                                    const data = await getMediaFile(id);
+                                    if (data) {
+                                        const url = URL.createObjectURL(data.blob);
+                                        if (data.type.startsWith('video/')) {
+                                            mediaItems.push(`<video controls src="${url}"></video>`);
+                                        } else {
+                                            mediaItems.push(`<img src="${url}" alt="Вложение" />`);
+                                        }
+                                    }
+                                } catch (e) { /* ignore */ }
+                            }
+                            if (mediaItems.length) {
+                                mediaHtml =
+                                    `<div class="review-media">${mediaItems.map(item => `<div class="media-item">${item}</div>`).join('')}</div>`;
+                            }
+                        }
+                        html += `
+                            <div class="review-card" data-index="${index}">
+                                <button class="delete-btn" data-index="${index}" aria-label="Удалить">✕</button>
+                                <div class="review-header">
+                                    <div class="avatar">${avatarHtml}</div>
+                                    <span class="review-author">${escapeHtml(review.name)}</span>
+                                    <span class="review-date">${dateStr}</span>
+                                </div>
+                                <div class="review-stars">${starsHtml}</div>
+                                <div class="review-text"><p>${escapeHtml(review.text)}</p></div>
+                                ${mediaHtml}
+                            </div>
+                        `;
+                    }
+                    list.innerHTML = html;
+                    document.querySelectorAll('.delete-btn').forEach(btn => {
+                        btn.addEventListener('click', async function() {
+                            const index = parseInt(this.dataset.index, 10);
+                            await deleteReview(index);
+                        });
+                    });
+                }
+                const total = reviews.length;
+                countSpan.textContent = total;
+                if (total === 0) {
+                    ratingNumber.textContent = '0.0';
+                    ratingStars.innerHTML = renderStars(0);
+                } else {
+                    const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+                    const avg = sum / total;
+                    ratingNumber.textContent = avg.toFixed(1);
+                    ratingStars.innerHTML = renderStars(avg);
+                }
+            }
+
+            function renderStars(rating, max = 5) {
+                const full = Math.round(rating);
+                let html = '';
+                for (let i = 1; i <= max; i++) {
+                    html += i <= full ? '<span class="star">★</span>' : '<span class="star empty">★</span>';
+                }
+                return html;
+            }
+
+            function getAvatarLetter(name) { return name ? name.trim().charAt(0).toUpperCase() : '?'; }
+
+            function formatDate(date) {
+                const d = new Date(date);
+                return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // ----- Добавление -----
+            async function addReview(name, rating, text, avatar, mediaFiles) {
+                const mediaIds = [];
+                for (const file of mediaFiles) {
+                    try { const id = await saveMediaFile(file);
+                        mediaIds.push(id); } catch (e) { /* ignore */ }
+                }
+                const reviews = loadReviews();
+                reviews.push({
+                    name: name.trim(),
+                    rating: parseInt(rating, 10),
+                    text: text.trim(),
+                    date: new Date().toISOString(),
+                    avatar: avatar || null,
+                    mediaIds: mediaIds
+                });
+                saveReviews(reviews);
+                await renderReviews();
+            }
+
+            // ----- Удаление -----
+            async function deleteReview(index) {
+                let reviews = loadReviews();
+                if (index < 0 || index >= reviews.length) return;
+                const review = reviews[index];
+                if (review.mediaIds && review.mediaIds.length) {
+                    for (const id of review.mediaIds) {
+                        try { await deleteMediaFile(id); } catch (e) { /* ignore */ }
+                    }
+                }
+                reviews.splice(index, 1);
+                saveReviews(reviews);
+                await renderReviews();
+            }
+
+            // ----- Форма -----
+            const form = document.getElementById('reviewForm');
+            const successMsg = document.getElementById('successMsg');
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const name = document.getElementById('name').value.trim();
+                const comment = document.getElementById('comment').value.trim();
+                if (!name) { alert('Введите имя.'); return; }
+                if (!comment) { alert('Напишите комментарий.'); return; }
+                if (selectedRating === 0) { alert('Выберите оценку.'); return; }
+
+                if (name.toLowerCase().includes('арина')) {
+                    showArinaAlert();
+                    form.reset();
+                    setRating(0);
+                    resetAvatar();
+                    selectedFiles = [];
+                    renderFileTags();
+                    mediaInput.value = '';
+                    return;
+                }
+
+                await addReview(name, selectedRating, comment, avatarDataURL, selectedFiles);
+
+                const emojis = { 5: '🌟', 4: '😊', 3: '😐', 2: '🙁', 1: '😞' };
+                const messages = { 5: 'Отлично!', 4: 'Хорошо!', 3: 'Неплохо!', 2: 'Огорчены!', 1: 'Примем меры!' };
+                showToast(emojis[selectedRating] || '📝', messages[selectedRating] || 'Спасибо!', selectedRating);
+
+                form.reset();
+                setRating(0);
+                resetAvatar();
+                selectedFiles = [];
+                renderFileTags();
+                mediaInput.value = '';
+                successMsg.classList.add('show');
+                setTimeout(() => successMsg.classList.remove('show'), 2500);
+            });
+
+            renderReviews();
+
+            window.addEventListener('beforeunload', function() { stopSiren(); });
+
+            // Перезапуск сапёра при активации фона
+            const origApply = applyBgSettings;
+            applyBgSettings = function(settings) {
+                origApply(settings);
+                if (settings && settings.type === 'minesweeper') {
+                    setTimeout(resetGame, 50);
+                }
+            };
+            window.applyBgSettings = applyBgSettings;
+
+        })();
+    </script>
+</body>
+</html>
